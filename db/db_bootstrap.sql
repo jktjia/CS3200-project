@@ -176,7 +176,7 @@ create table if not exists enterprise_credit_cards (
 );
 
 -- Add sample data.
-insert into enterprises (name)
+/*insert into enterprises (name)
 values ('Corkery-Rosenbaum'),
        ('Wunsch, Harber and Schmidt'),
        ('Gulgowski-Jenkins'),
@@ -269,4 +269,4 @@ values ('5367372710060939', 042, '2023-07-01', 'Antony', 'Muzzullo'),
 
 insert into enterprise_credit_cards (enterprise_id, credit_card_id)
 values (1,1), (2,2), (3,4), (4,5), (5,3),
-       (4,6), (2,7), (2,8);
+       (4,6), (2,7), (2,8);*/
