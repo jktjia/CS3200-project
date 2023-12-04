@@ -25,13 +25,12 @@ def get_saved(id):
 
 
 # get follows
-@user.route('/user/<id>/saves', methods=['GET'])
+@user.route('/user/<id>/follow/user', methods=['GET'])
 def get_saved(id):
     cursor = db.get_db().cursor()
-    cursor.execute(f'select log_id from user_saved_logs\
-        inner join users on users.id = user_saved_logs.user_id\
-        inner join logs on logs.id = user_saved_logs.log_id\
-            where user_id = {id}')
+    cursor.execute(f'''select user_id from user_follows_users where 
+    follower_id = {id}
+    ''')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     theData = cursor.fetchall()
