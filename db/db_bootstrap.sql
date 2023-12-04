@@ -115,9 +115,9 @@ create table if not exists logs (
 create table if not exists comments (
     id int primary key auto_increment,
     content text not null,
-    log_list_id int not null,
+    log_id int not null,
     user_id int not null,
-    constraint c_log_list_fk foreign key (log_list_id) references log_lists(id)
+    constraint c_log_fk foreign key (log_id) references logs(id)
       on update cascade on delete restrict,
     constraint c_user_fk foreign key (user_id) references users(id)
       on update cascade on delete restrict
