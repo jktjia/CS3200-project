@@ -130,19 +130,14 @@ def grant_access_to_grove(id):
     current_app.logger.info(the_data)
     current_app.logger.info("")
     current_app.logger.info("-----------------------")
-    
-    # Get the access_id from access_types table based on the provided access_type
-    query_access_id = 'SELECT id FROM access_types WHERE name = "{}"'.format(access_type)
-    
+
     cursor = db.get_db().cursor()
-    cursor.execute(query_access_id)
-    access_id = cursor.fetchall()[0][0]
     
     # Constructing the query
     query_insert_access = '''
-        INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id)
+        INSERT INTO user_log_list_accesses (user_id, log_list_id, access)
         VALUES ({}, {}, {})
-    '''.format(user_id, id, access_id)
+    '''.format(user_id, id, access_type)
 
     current_app.logger.info(query_insert_access)
 

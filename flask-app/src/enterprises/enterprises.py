@@ -229,7 +229,7 @@ def get_logs_keyword():
     the_data = request.json
     current_app.logger.info(the_data)
     
-    keyword = request.args.get('keyword') # Unsure if this is the correct way
+    keyword = the_data['keyword'] # Unsure if this is the correct way
     query = 'SELECT * FROM logs WHERE content LIKE %s'
     values = ('%' + keyword + '%',)
     cursor = db.get_db().cursor()
@@ -247,7 +247,7 @@ def get_categories_keyword():
     the_data = request.json
     current_app.logger.info(the_data)
     
-    keyword = request.args.get('keyword') # Unsure if this is the correct way
+    keyword = the_data['keyword'] # Unsure if this is the correct way
     query = 'SELECT * FROM categories WHERE topic LIKE %s'
     values = ('%' + keyword + '%',)
     
