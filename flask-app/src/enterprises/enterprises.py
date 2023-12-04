@@ -4,10 +4,10 @@ from src import db
 
 
 
-enterprise = Blueprint('enterprise', __name__)
+enterprises = Blueprint('enterprises', __name__)
 
 # Add a new enterprise in the db
-@enterprise.route('/enterprise', methods=['POST'])
+@enterprises.route('/enterprises', methods=['POST'])
 def add_new_enterprise():
     
     # collecting data from the request object 
@@ -30,7 +30,7 @@ def add_new_enterprise():
     return 'Added enterprise successfully!'
 
 # Get enterprise information
-@enterprise.route('/enterprise/<id>', methods=['GET'])
+@enterprises.route('/enterprises/<id>', methods=['GET'])
 def get_enterprise_detail (id):
     query = 'SELECT id, name FROM enterprises WHERE id = ' + str(id)
     current_app.logger.info(query)
@@ -45,7 +45,7 @@ def get_enterprise_detail (id):
     return jsonify(json_data)
 
 # Update enterprise information
-@enterprise.route('/enterprise/<id>', methods=['PUT'])
+@enterprises.route('/enterprises/<id>', methods=['PUT'])
 def update_enterprise_detail (id):
     the_data = request.json
     current_app.logger.info(the_data)
@@ -66,7 +66,7 @@ def update_enterprise_detail (id):
     return 'Updated enterprise successfully!'
 
 # Delete enterprise
-@enterprise.route('/enterprise/<id>', methods=['DELETE'])
+@enterprises.route('/enterprises/<id>', methods=['DELETE'])
 def remove_enterprise_detail (id):
     query = 'DELETE FROM enterprises WHERE id = ' + str(id)
     current_app.logger.info(query)
@@ -81,7 +81,7 @@ def remove_enterprise_detail (id):
     return 'Deleted enterprise successfully!'
 
 # Add card to enterprise
-@enterprise.route('/enterprise/<id>/card', methods=['POST'])
+@enterprises.route('/enterprises/<id>/card', methods=['POST'])
 def add_enterprise_card (id):
     
     # collecting data from the request object 
@@ -112,7 +112,7 @@ def add_enterprise_card (id):
    
 # Remove card from enterprise
 # Should it be /enterprise/<enterprise_id>/card/<card_id>???
-@enterprise.route('/enterprise/<id>/card', methods=['DELETE'])
+@enterprises.route('/enterprises/<id>/card', methods=['DELETE'])
 def remove_enterprise_card (id):
     
     card_id = request.json['card_id'] # UNSURE HOW TO FORMAT TO GET IT FROM THIS JSON REQUEST
@@ -132,7 +132,7 @@ def remove_enterprise_card (id):
 
 
 # Add a user to an enterprise
-@enterprise.route('/enterprise/<id>/user/<user_id>', methods=['POST'])
+@enterprises.route('/enterprises/<id>/user/<user_id>', methods=['POST'])
 def add_user_to_enterprise(id, user_id):
     # Update user's enterprise_id
     update_query = 'UPDATE users SET enterprise_id = %s WHERE id = %s'
@@ -145,7 +145,7 @@ def add_user_to_enterprise(id, user_id):
 
 
 # Remove user from enterprise
-@enterprise.route('/enterprise/<id>/user/<user_id>', methods=['DELETE'])
+@enterprises.route('/enterprises/<id>/user/<user_id>', methods=['DELETE'])
 def remove_user_from_enterprise(id, user_id):
     
     update_query = 'UPDATE users SET enterprise_id = NULL WHERE id = %s AND enterprise_id = %s'
@@ -157,24 +157,24 @@ def remove_user_from_enterprise(id, user_id):
     return 'User removed from enterprise successfully!'
 
 
-# @enterprise.route('/enterprise/<id>/forests', methods=['GET'])
+# @enterprises.route('/enterprises/<id>/forests', methods=['GET'])
 # def get_enterprise_forests(id):
 #     return
 
 
-# @enterprise.route('/enterprise/<enterprise_id>/forests/<forest_id>', methods=['POST'])
+# @enterprises.route('/enterprises/<enterprise_id>/forests/<forest_id>', methods=['POST'])
 # def add_forest_to_enterprise(enterprise_id, forest_id):
 #     return
 
 
-# @enterprise.route('/enterprise/<enterprise_id>/forests/<forest_id>', methods=['DELETE'])
+# @enterprises.route('/enterprises/<enterprise_id>/forests/<forest_id>', methods=['DELETE'])
 # def remove_forest_from_enterprise(enterprise_id, forest_id):
 #     return 
 
-# @enterprise.route('/enterprise/search/logs', methods=['GET'])
+# @enterprises.route('/enterprises/search/logs', methods=['GET'])
 # def get_logs_keyword():
 #     return
 
-# @enterprise.route('/enterprise/search/groves', methods=['GET'])
+# @enterprises.route('/enterprises/search/groves', methods=['GET'])
 # def get_groves_keyword():
 #     return
