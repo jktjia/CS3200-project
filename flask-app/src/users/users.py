@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, make_response
 import json
 from src import db
+import sys
 
 
 user = Blueprint('user', __name__)
@@ -26,7 +27,7 @@ def get_saved(id):
 
 # get follows
 @user.route('/user/<id>/follow/user', methods=['GET'])
-def get_saved(id):
+def get_following(id):
     cursor = db.get_db().cursor()
     cursor.execute(f'''select user_id from user_follows_users where 
     follower_id = {id}
@@ -45,10 +46,11 @@ def get_saved(id):
 @user.route('/user/<userID>', methods=['GET'])
 def get_customer(userID):
     cursor = db.get_db().cursor()
-    cursor.execute('select * from user where id = {0}'.format(userID))
+    cursor.execute('select * from users where id = {0}'.format(userID))
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     theData = cursor.fetchall()
+    # print(theData,file=sys.stderr)
     for row in theData:
         json_data.append(dict(zip(row_headers, row)))
     the_response = make_response(jsonify(json_data))
