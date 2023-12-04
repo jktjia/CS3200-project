@@ -72,28 +72,18 @@ create table if not exists log_lists ( -- these are groves but for my sanity the
       on update cascade on delete restrict
 );
 
--- this table exists for efficiency (there are only a limited number of access types
--- and it's easier to reference ids than to constrain a string to one of something like 3-5 options)
-create table if not exists access_types (
-    id int primary key auto_increment,
-    name varchar(10) unique not null
-);
-
 -- table of access types granted to users for private logs
 create table if not exists user_log_list_accesses (
     user_id int not null,
     log_list_id int not null,
-    -- access varchar(10) not null,
-    access_id int,
+    access varchar(10) not null,
     primary key (user_id, log_list_id),
     constraint ulla_user_fk foreign key (user_id) references users(id)
       on update cascade on delete cascade,
     constraint ulla_log_list_fk foreign key (log_list_id) references log_lists(id)
       on update cascade on delete cascade,
-    constraint ulla_access_type_fk foreign key (access_id) references access_types(id)
-      on update cascade on delete restrict
-    -- constraint ll_access_types_ck check
-        -- access = 'creator' or access = 'write' or access = 'comment' or access = 'read'
+    constraint ll_access_types_ck check
+        access = 'creator' or access = 'write' or access = 'comment' or access = 'read'
 );
 
 create table if not exists logs (
@@ -218,14 +208,11 @@ values (false, 'ac nulla sed vel enim sit amet nunc', 'Phasellus sit amet erat. 
        (false, 'sem fusce consequat nulla nisl', 'Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy. Integer non velit.', 2),
        (false, 'dui nec nisi volutpat eleifend donec ut dolor morbi vel', 'Phasellus id sapien in sapien iaculis congue.', 5);
 
-insert into access_types (name)
-values ('creator'), ('write'), ('comment'), ('read');
-
 insert into user_log_list_accesses (user_id, log_list_id, access_id)
-values (9, 5, 2), (6, 5, 2), (9, 7, 3), (6, 8, 2), (3, 5, 2),
-       (5, 7, 2), (1, 7, 4), (2, 2, 4), (1, 8, 3), (8, 2, 4),
-       (8, 1, 1), (9, 2, 1), (4, 3, 1), (6, 4, 1), (1, 5, 1),
-       (10, 6, 1), (6, 7, 1), (10, 8, 1), (6, 9, 1), (4, 10, 1);
+values (9, 5, 'write'), (6, 5, 'write'), (9, 7, 'comment'), (6, 8, 'write'), (3, 5, 'write'),
+       (5, 7, 'write'), (1, 7, 4), (2, 2, 'read'), (1, 8, 'comment'), (8, 2, 'read'),
+       (8, 1, 'creator'), (9, 2, 'creator'), (4, 3, 'creator'), (6, 4, 'creator'), (1, 5, 'creator'),
+       (10, 6, 'creator'), (6, 7, 'creator'), (10, 8, 'creator'), (6, 9, 'creator'), (4, 10, 'creator');
 
 insert into logs (title, content, log_list_id, created_by)
 values ('et ultrices posuere cubilia curae mauris', 'Proin risus. Praesent lectus. Vestibulum quam sapien, varius ut, blandit non, interdum in, ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio. Curabitur convallis. Duis consequat dui nec nisi volutpat eleifend. Donec ut dolor. Morbi vel lectus in quam fringilla rhoncus. Mauris enim leo, rhoncus sed, vestibulum sit amet, cursus id, turpis.', 1, 8),
