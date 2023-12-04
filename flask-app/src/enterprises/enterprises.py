@@ -2,12 +2,10 @@ from flask import Blueprint, request, jsonify, make_response, current_app
 import json
 from src import db
 
-
-
-enterprise = Blueprint('enterprise', __name__)
+enterprises = Blueprint('enterprises', __name__)
 
 # Add a new enterprise in the db
-@enterprise.route('/enterprise', methods=['POST'])
+@enterprises.route('/enterprises', methods=['POST'])
 def add_new_enterprise():
     
     # collecting data from the request object 
@@ -30,7 +28,7 @@ def add_new_enterprise():
     return 'Success!'
 
 # Get enterprise information
-@enterprise.route('/enterprise/<id>', methods=['GET'])
+@enterprises.route('/enterprises/<id>', methods=['GET'])
 def get_enterprise_detail (id):
     
     query = 'SELECT id, name FROM enterprise WHERE id = ' + str(id)

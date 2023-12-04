@@ -37,6 +37,13 @@ def get_product_detail (id):
     query = 'SELECT id, product_name, description, list_price, category FROM products WHERE id = ' + str(id)
     current_app.logger.info(query)
 
+    #internal flask logging
+    current_app.logger.info("-----------------------")
+    current_app.logger.info("")
+    current_app.logger.info(query)
+    current_app.logger.info("")
+    current_app.logger.info("-----------------------")
+
     cursor = db.get_db().cursor()
     cursor.execute(query)
     column_headers = [x[0] for x in cursor.description]
