@@ -150,7 +150,7 @@ def get_comments (id):
 
 #get log likes
 @logs.route('/logs/<id>/like', methods=['GET'])
-def get_comments (id):
+def get_likes (id):
     query = 'SELECT * FROM user_liked_logs WHERE log_id = ' + str(id)
 
     cursor = db.get_db().cursor()
@@ -178,7 +178,7 @@ def delete_log(id):
 
 #delete comment
 @logs.route('/logs/<id>/comment', methods=['DELETE'])
-def delete_log(id):
+def delete_comment(id):
     # Constructing the query
     query = 'DELETE from comments WHERE log_id = ' + str(id)
     current_app.logger.info(query)
@@ -192,7 +192,7 @@ def delete_log(id):
 
 #delete like
 @logs.route('/logs/<id>/like', methods=['DELETE'])
-def delete_log(id):
+def delete_like(id):
     # Constructing the query
     query = 'DELETE from user_liked_logs WHERE log_id = ' + str(id)
     current_app.logger.info(query)
@@ -206,7 +206,7 @@ def delete_log(id):
 
 #delete save
 @logs.route('/logs/<id>/save', methods=['DELETE'])
-def delete_log(id):
+def delete_save(id):
     # Constructing the query
     query = 'DELETE from user_saved_logs WHERE log_id = ' + str(id)
     current_app.logger.info(query)

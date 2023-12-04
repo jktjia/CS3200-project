@@ -45,7 +45,7 @@ create table if not exists user_follows_categories (
     category_id int,
     primary key (user_id, category_id),
     constraint ufc_user_fk foreign key (user_id) references users(id)
-      on update cascade on delete restrict,
+      on update cascade on delete cascade,
     constraint ufc_category_fk foreign key (category_id) references categories(id)
       on update cascade on delete restrict
 );
@@ -54,9 +54,9 @@ create table if not exists user_follows_users (
     follower_id int not null,
     user_id int not null,
     constraint ufu_follower_fk foreign key (follower_id) references users(id)
-      on update cascade on delete restrict,
+      on update cascade on delete cascade,
     constraint ufu_user_fk foreign key (user_id) references users(id)
-      on update cascade on delete restrict
+      on update cascade on delete cascade
 );
 
 create table if not exists log_lists ( -- these are groves but for my sanity they're called log lists in the code
@@ -72,28 +72,18 @@ create table if not exists log_lists ( -- these are groves but for my sanity the
       on update cascade on delete restrict
 );
 
--- this table exists for efficiency (there are only a limited number of access types
--- and it's easier to reference ids than to constrain a string to one of something like 3-5 options)
-create table if not exists access_types (
-    id int primary key auto_increment,
-    name varchar(10) unique not null
-);
-
 -- table of access types granted to users for private logs
 create table if not exists user_log_list_accesses (
     user_id int not null,
     log_list_id int not null,
-    -- access varchar(10) not null,
-    access_id int,
+    access varchar(10) not null,
     primary key (user_id, log_list_id),
     constraint ulla_user_fk foreign key (user_id) references users(id)
-      on update cascade on delete restrict,
+      on update cascade on delete cascade,
     constraint ulla_log_list_fk foreign key (log_list_id) references log_lists(id)
-      on update cascade on delete restrict,
-    constraint ulla_access_type_fk foreign key (access_id) references access_types(id)
-      on update cascade on delete restrict
-    -- constraint ll_access_types_ck check
-        -- access = 'creator' or access = 'write' or access = 'comment' or access = 'read'
+      on update cascade on delete cascade,
+    constraint ll_access_types_ck check
+        (access = 'creator' or access = 'write' or access = 'comment' or access = 'read')
 );
 
 create table if not exists logs (
@@ -106,21 +96,21 @@ create table if not exists logs (
     updated_at datetime not null default current_timestamp on update current_timestamp,
     created_by int not null,
     constraint l_log_list_fk foreign key (log_list_id) references log_lists(id)
-      on update cascade on delete restrict,
+      on update cascade on delete cascade,
     constraint l_rating_0_to_5_chk check (rating is null or (rating >= 0 and rating <= 5)),
     constraint l_user_fk foreign key (created_by) references users(id)
-      on update cascade on delete restrict
+      on update cascade on delete cascade
 );
 
 create table if not exists comments (
     id int primary key auto_increment,
     content text not null,
-    log_list_id int not null,
+    log_id int not null,
     user_id int not null,
-    constraint c_log_list_fk foreign key (log_list_id) references log_lists(id)
-      on update cascade on delete restrict,
+    constraint c_log_fk foreign key (log_id) references logs(id)
+      on update cascade on delete cascade,
     constraint c_user_fk foreign key (user_id) references users(id)
-      on update cascade on delete restrict
+      on update cascade on delete cascade
 );
 
 -- public likes to signal to original creator that the user liked the log
@@ -130,9 +120,9 @@ create table if not exists user_liked_logs (
     liked_at datetime default current_timestamp,
     primary key (user_id, log_id),
     constraint ufl_user_fk foreign key (user_id) references users(id)
-      on update cascade on delete restrict,
+      on update cascade on delete cascade,
     constraint ufl_log_fk foreign key (log_id) references logs(id)
-      on update cascade on delete restrict
+      on update cascade on delete cascade
 );
 
 -- privately saved logs for later reference
@@ -141,9 +131,9 @@ create table if not exists user_saved_logs (
     log_id int,
     primary key (user_id, log_id),
     constraint usl_user_fk foreign key (user_id) references users(id)
-      on update cascade on delete restrict,
+      on update cascade on delete cascade,
     constraint usl_log_fk foreign key (log_id) references logs(id)
-      on update cascade on delete restrict
+      on update cascade on delete cascade
 );
 
 create table if not exists enterprise_categories (
@@ -151,7 +141,7 @@ create table if not exists enterprise_categories (
     category_id int not null,
     primary key (enterprise_id, category_id),
     constraint ec_enterprise_fk foreign key (enterprise_id) references enterprises(id)
-      on update cascade on delete restrict,
+      on update cascade on delete cascade,
     constraint ec_category_fk foreign key (category_id) references categories(id)
       on update cascade on delete restrict
 );
@@ -165,6 +155,7 @@ create table if not exists credit_cards (
     last_name varchar(25) not null
 );
 
+-- i think this should be restructured so that credit_cards are weak entities
 create table if not exists enterprise_credit_cards (
     enterprise_id int not null,
     credit_card_id int not null,
@@ -217,14 +208,11 @@ values (false, 'ac nulla sed vel enim sit amet nunc', 'Phasellus sit amet erat. 
        (false, 'sem fusce consequat nulla nisl', 'Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy. Integer non velit.', 2),
        (false, 'dui nec nisi volutpat eleifend donec ut dolor morbi vel', 'Phasellus id sapien in sapien iaculis congue.', 5);
 
-insert into access_types (name)
-values ('creator'), ('write'), ('comment'), ('read');
-
 insert into user_log_list_accesses (user_id, log_list_id, access_id)
-values (9, 5, 2), (6, 5, 2), (9, 7, 3), (6, 8, 2), (3, 5, 2),
-       (5, 7, 2), (1, 7, 4), (2, 2, 4), (1, 8, 3), (8, 2, 4),
-       (8, 1, 1), (9, 2, 1), (4, 3, 1), (6, 4, 1), (1, 5, 1),
-       (10, 6, 1), (6, 7, 1), (10, 8, 1), (6, 9, 1), (4, 10, 1);
+values (9, 5, 'write'), (6, 5, 'write'), (9, 7, 'comment'), (6, 8, 'write'), (3, 5, 'write'),
+       (5, 7, 'write'), (1, 7, 4), (2, 2, 'read'), (1, 8, 'comment'), (8, 2, 'read'),
+       (8, 1, 'creator'), (9, 2, 'creator'), (4, 3, 'creator'), (6, 4, 'creator'), (1, 5, 'creator'),
+       (10, 6, 'creator'), (6, 7, 'creator'), (10, 8, 'creator'), (6, 9, 'creator'), (4, 10, 'creator');
 
 insert into logs (title, content, log_list_id, created_by)
 values ('et ultrices posuere cubilia curae mauris', 'Proin risus. Praesent lectus. Vestibulum quam sapien, varius ut, blandit non, interdum in, ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio. Curabitur convallis. Duis consequat dui nec nisi volutpat eleifend. Donec ut dolor. Morbi vel lectus in quam fringilla rhoncus. Mauris enim leo, rhoncus sed, vestibulum sit amet, cursus id, turpis.', 1, 8),
@@ -270,4 +258,3 @@ values ('5367372710060939', 042, '2023-07-01', 'Antony', 'Muzzullo'),
 insert into enterprise_credit_cards (enterprise_id, credit_card_id)
 values (1,1), (2,2), (3,4), (4,5), (5,3),
        (4,6), (2,7), (2,8);
-       

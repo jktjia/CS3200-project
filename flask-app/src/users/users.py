@@ -101,7 +101,7 @@ def get_saved(id):
 @users.route('/users/<id>/groves/owned', methods=['GET'])
 def get_groves_owned(id):
     cursor = db.get_db().cursor()
-    query = '''select name, description from log_lists join user_log_list_accesses on 
+    query = '''select name, description, log_lists.id from log_lists join user_log_list_accesses on 
                    log_lists.id = user_log_list_accesses.log_list_id where user_id = {} and access_id = 1'''.format(id)
     cursor.execute(query)
     row_headers = [x[0] for x in cursor.description]
@@ -132,6 +132,20 @@ def get_groves_access(id):
 def get_follows(id):
     cursor = db.get_db().cursor()
     cursor.execute(f'''select username, user_id from user_follows_users join users on user_follows_users.user_id = users.id 
+                   where follower_id = {id};''')
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    theData = cursor.fetchall()
+    for row in theData:
+        json_data.append(dict(zip(row_headers, row)))
+    the_response = make_response(jsonify(json_data))
+    return the_response
+
+# get a user's home feed
+@users.route('/users/<id>/home', methods=['GET'])
+def get_home(id):
+    cursor = db.get_db().cursor()
+    cursor.execute(f'''select * from user_follows_users join users on user_follows_users.user_id = users.id 
                    where follower_id = {id};''')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
@@ -185,6 +199,7 @@ def unfollow_user(id):
     
     return 'Success!'
 
+#delete a user
 @users.route('/users/<id>', methods=['DELETE'])
 def delete_user(id):
     query = 'delete from users where id = {}'.format(id)
