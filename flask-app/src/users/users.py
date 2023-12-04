@@ -131,7 +131,7 @@ def get_groves_access(id):
 @users.route('/users/<id>/follows', methods=['GET'])
 def get_follows(id):
     cursor = db.get_db().cursor()
-    cursor.execute(f'''select username, user_id from user_follows_users join users on user_follows_users.follower_id = users.id 
+    cursor.execute(f'''select username, user_id from user_follows_users join users on user_follows_users.user_id = users.id 
                    where follower_id = {id};''')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
@@ -141,3 +141,57 @@ def get_follows(id):
     the_response = make_response(jsonify(json_data))
     return the_response
 
+# follow user
+@users.route('/users/<id>/follows', methods=['POST'])
+def follow_user(id):
+    # collecting data from the request object 
+    the_data = request.json
+    current_app.logger.info(the_data)
+    
+    #extracting the variable
+    user_id = the_data['user_id']
+
+    # Constructing the query
+    query = 'insert into user_follows_users (follower_id, user_id) values ("'
+    query += str(id) + '", "'
+    query += str(user_id) + '")'
+    current_app.logger.info(query)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'
+
+# unfollow user
+@users.route('/users/<id>/follows', methods=['DELETE'])
+def unfollow_user(id):
+    # collecting data from the request object 
+    the_data = request.json
+    current_app.logger.info(the_data)
+    
+    #extracting the variable
+    user_id = the_data['user_id']
+
+    # Constructing the query
+    query = 'delete from user_follows_users where follower_id = {} AND user_id = {}'.format(id, user_id)
+    current_app.logger.info(query)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'
+
+@users.route('/users/<id>', methods=['DELETE'])
+def delete_user(id):
+    query = 'delete from users where id = {}'.format(id)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'
