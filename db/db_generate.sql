@@ -1,4 +1,4 @@
-delete from enterprises where true;
+use loggr;
 
 INSERT INTO enterprises (name) VALUES ('Doyle Inc');
 INSERT INTO enterprises (name) VALUES ('Daugherty and Sons');
@@ -863,7 +863,7 @@ INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (26,
 INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (6, 23, 3);
 INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (25, 24, 4);
 INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (37, 25, 3);
-INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (45, 26, 4);
+INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (46, 26, 4);
 INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (70, 27, 3);
 INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (54, 28, 3);
 INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (2, 29, 4);
@@ -872,12 +872,12 @@ INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (24,
 INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (33, 32, 2);
 INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (4, 33, 4);
 INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (19, 34, 4);
-INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (62, 35, 3);
+INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (63, 35, 3);
 INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (13, 36, 3);
 INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (29, 37, 3);
-INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (59, 38, 2);
+INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (58, 38, 2);
 INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (62, 39, 2);
-INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (39, 0, 4);
+INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (39, 40, 4);
 INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (63, 40, 2);
 INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (13, 2, 3);
 INSERT INTO user_log_list_accesses (user_id, log_list_id, access_id) VALUES (24, 3, 2);
