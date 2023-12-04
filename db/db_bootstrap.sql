@@ -83,7 +83,7 @@ create table if not exists user_log_list_accesses (
     constraint ulla_log_list_fk foreign key (log_list_id) references log_lists(id)
       on update cascade on delete cascade,
     constraint ll_access_types_ck check
-        access = 'creator' or access = 'write' or access = 'comment' or access = 'read'
+        (access = 'creator' or access = 'write' or access = 'comment' or access = 'read')
 );
 
 create table if not exists logs (
