@@ -45,7 +45,7 @@ create table if not exists user_follows_categories (
     category_id int,
     primary key (user_id, category_id),
     constraint ufc_user_fk foreign key (user_id) references users(id)
-      on update cascade on delete restrict,
+      on update cascade on delete cascade,
     constraint ufc_category_fk foreign key (category_id) references categories(id)
       on update cascade on delete restrict
 );
@@ -54,9 +54,9 @@ create table if not exists user_follows_users (
     follower_id int not null,
     user_id int not null,
     constraint ufu_follower_fk foreign key (follower_id) references users(id)
-      on update cascade on delete restrict,
+      on update cascade on delete cascade,
     constraint ufu_user_fk foreign key (user_id) references users(id)
-      on update cascade on delete restrict
+      on update cascade on delete cascade
 );
 
 create table if not exists log_lists ( -- these are groves but for my sanity they're called log lists in the code
@@ -87,9 +87,9 @@ create table if not exists user_log_list_accesses (
     access_id int,
     primary key (user_id, log_list_id),
     constraint ulla_user_fk foreign key (user_id) references users(id)
-      on update cascade on delete restrict,
+      on update cascade on delete cascade,
     constraint ulla_log_list_fk foreign key (log_list_id) references log_lists(id)
-      on update cascade on delete restrict,
+      on update cascade on delete cascade,
     constraint ulla_access_type_fk foreign key (access_id) references access_types(id)
       on update cascade on delete restrict
     -- constraint ll_access_types_ck check
@@ -106,10 +106,10 @@ create table if not exists logs (
     updated_at datetime not null default current_timestamp on update current_timestamp,
     created_by int not null,
     constraint l_log_list_fk foreign key (log_list_id) references log_lists(id)
-      on update cascade on delete restrict,
+      on update cascade on delete cascade,
     constraint l_rating_0_to_5_chk check (rating is null or (rating >= 0 and rating <= 5)),
     constraint l_user_fk foreign key (created_by) references users(id)
-      on update cascade on delete restrict
+      on update cascade on delete cascade
 );
 
 create table if not exists comments (
@@ -118,9 +118,9 @@ create table if not exists comments (
     log_id int not null,
     user_id int not null,
     constraint c_log_fk foreign key (log_id) references logs(id)
-      on update cascade on delete restrict,
+      on update cascade on delete cascade,
     constraint c_user_fk foreign key (user_id) references users(id)
-      on update cascade on delete restrict
+      on update cascade on delete cascade
 );
 
 -- public likes to signal to original creator that the user liked the log
@@ -130,9 +130,9 @@ create table if not exists user_liked_logs (
     liked_at datetime default current_timestamp,
     primary key (user_id, log_id),
     constraint ufl_user_fk foreign key (user_id) references users(id)
-      on update cascade on delete restrict,
+      on update cascade on delete cascade,
     constraint ufl_log_fk foreign key (log_id) references logs(id)
-      on update cascade on delete restrict
+      on update cascade on delete cascade
 );
 
 -- privately saved logs for later reference
@@ -141,9 +141,9 @@ create table if not exists user_saved_logs (
     log_id int,
     primary key (user_id, log_id),
     constraint usl_user_fk foreign key (user_id) references users(id)
-      on update cascade on delete restrict,
+      on update cascade on delete cascade,
     constraint usl_log_fk foreign key (log_id) references logs(id)
-      on update cascade on delete restrict
+      on update cascade on delete cascade
 );
 
 create table if not exists enterprise_categories (
@@ -151,7 +151,7 @@ create table if not exists enterprise_categories (
     category_id int not null,
     primary key (enterprise_id, category_id),
     constraint ec_enterprise_fk foreign key (enterprise_id) references enterprises(id)
-      on update cascade on delete restrict,
+      on update cascade on delete cascade,
     constraint ec_category_fk foreign key (category_id) references categories(id)
       on update cascade on delete restrict
 );
@@ -165,6 +165,7 @@ create table if not exists credit_cards (
     last_name varchar(25) not null
 );
 
+-- i think this should be restructured so that credit_cards are weak entities
 create table if not exists enterprise_credit_cards (
     enterprise_id int not null,
     credit_card_id int not null,
