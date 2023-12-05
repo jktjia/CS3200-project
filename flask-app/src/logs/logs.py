@@ -138,7 +138,19 @@ def get_log (id):
 @logs.route('/logs/<id>/comment', methods=['GET'])
 def get_comments (id):
     query = 'SELECT comments.id, content, log_id, username FROM comments JOIN users ON comments.user_id = users.id WHERE log_id = ' + str(id)
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
 
+#get log comments
+@logs.route('/logs/<id>/comment/count', methods=['GET'])
+def get_comment_count (id):
+    query = 'SELECT COUNT(*) as comment_count FROM comments WHERE log_id = ' + str(id)
     cursor = db.get_db().cursor()
     cursor.execute(query)
     column_headers = [x[0] for x in cursor.description]
@@ -151,7 +163,7 @@ def get_comments (id):
 #get log number of likes
 @logs.route('/logs/<id>/like', methods=['GET'])
 def get_likes (id):
-    query = 'SELECT COUNT(*) FROM user_liked_logs WHERE log_id = ' + str(id)
+    query = 'SELECT COUNT(*) as like_count FROM user_liked_logs WHERE log_id = ' + str(id)
 
     cursor = db.get_db().cursor()
     cursor.execute(query)
