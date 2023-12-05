@@ -147,14 +147,14 @@ def get_users_enterprise(id):
     return jsonify(json_data)
 
 
-# Add a user to an enterprise
-@enterprises.route('/enterprise/<id>/user/<user_id>', methods=['POST'])
-def add_user_to_enterprise(id, user_id):
+# Add a user to an enterprise, use user name
+@enterprises.route('/enterprise/<id>/user/<user_name>', methods=['PUT'])
+def add_user_to_enterprise(id, user_name):
     the_data = request.json
     current_app.logger.info(the_data)
     
     # Update user's enterprise_id
-    update_query = 'UPDATE users SET enterprise_id = %s WHERE id = %s'
+    update_query = f'UPDATE users SET enterprise_id = {id} WHERE username = {user_name}'
     cursor = db.get_db().cursor()
     values = (id, user_id)
     cursor.execute(update_query, values)
