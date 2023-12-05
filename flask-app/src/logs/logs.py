@@ -48,7 +48,7 @@ def comment_log(id):
     
     #extracting the variable
     user_id = the_data['user_id']
-    content = the_data['contennt']
+    content = the_data['content']
 
     # Constructing the query
     query = 'insert into comments (user_id, log_id, content) values ("'
