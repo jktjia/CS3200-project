@@ -137,7 +137,7 @@ def get_log (id):
 #get log comments
 @logs.route('/logs/<id>/comment', methods=['GET'])
 def get_comments (id):
-    query = 'SELECT * FROM comments WHERE log_id = ' + str(id)
+    query = 'SELECT comments.id, content, log_id, username FROM comments JOIN users ON comments.user_id = users.id WHERE log_id = ' + str(id)
 
     cursor = db.get_db().cursor()
     cursor.execute(query)
