@@ -148,10 +148,10 @@ def get_comments (id):
         json_data.append(dict(zip(column_headers, row)))
     return jsonify(json_data)
 
-#get log likes
+#get log number of likes
 @logs.route('/logs/<id>/like', methods=['GET'])
 def get_likes (id):
-    query = 'SELECT * FROM user_liked_logs WHERE log_id = ' + str(id)
+    query = 'SELECT COUNT(*) FROM user_liked_logs WHERE log_id = ' + str(id)
 
     cursor = db.get_db().cursor()
     cursor.execute(query)
