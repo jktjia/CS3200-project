@@ -102,7 +102,7 @@ def add_enterprise_card (id):
         
     return 'Added card to enterprise successfully!'
 
-# Add card to enterprise
+# Get cards for enterprise
 @enterprises.route('/enterprise/<id>/card', methods=['GET'])
 def get_enterprise_card (id):
     query = 'SELECT * FROM credit_cards WHERE enterprise_id = ' + str(id)
@@ -119,10 +119,10 @@ def get_enterprise_card (id):
    
 # Remove card from enterprise
 # Should it be /enterprise/<enterprise_id>/card/<card_id>???
-@enterprises.route('/enterprise/card/<id>', methods=['DELETE'])
-def remove_enterprise_card (id):
-    delete_query = 'DELETE FROM credit_cards WHERE  credit_card_id = %s'
-    values = (id)
+@enterprises.route('/enterprise/<id>/card/<number>', methods=['DELETE'])
+def remove_enterprise_card (id, number):
+    delete_query = 'DELETE FROM credit_cards WHERE enterprise_id = %s AND number = %s'
+    values = (id, number)
     cursor = db.get_db().cursor()
     cursor.execute(delete_query, values)
 
@@ -170,7 +170,7 @@ def get_enterprise_forests(id):
     query = 'SELECT categories.* FROM categories ' \
             'JOIN enterprise_categories ON categories.id = enterprise_categories.category_id ' \
             'WHERE enterprise_categories.enterprise_id = %s'
-    values = (id,)
+    values = (id)
     cursor = db.get_db().cursor()
     cursor.execute(query, values)
     column_headers = [x[0] for x in cursor.description]
