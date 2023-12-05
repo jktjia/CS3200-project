@@ -94,35 +94,37 @@ def add_enterprise_card (id):
     first_name = card_data['first_name']
     last_name = card_data['last_name']
     
-    query = 'INSERT INTO credit_cards (number, security_code, expiration, first_name, last_name) VALUES (%s, %s, %s, %s, %s)'
-    values = (number, security_code, expiration, first_name, last_name)
+    query = 'INSERT INTO credit_cards (enterprise_id number, security_code, expiration, first_name, last_name) VALUES (%s, %s, %s, %s, %s, %s)'
+    values = (id, number, security_code, expiration, first_name, last_name)
     cursor = db.get_db().cursor()
     cursor.execute(query, values)
-    credit_card_id = cursor.lastrowid
-
-    # Linking credit card to enterprise
-    link_query = 'INSERT INTO enterprise_credit_cards (enterprise_id, credit_card_id) VALUES (%s, %s)'
-    values = (id, credit_card_id)
-    cursor.execute(link_query, values)
     db.get_db().commit()
         
     return 'Added card to enterprise successfully!'
+
+# Add card to enterprise
+@enterprises.route('/enterprise/<id>/card', methods=['GET'])
+def add_enterprise_card (id):
+    query = 'SELECT * FROM credit_cards WHERE enterprise_id = ' + str(id)
+    current_app.logger.info(query)
+    
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
    
 # Remove card from enterprise
 # Should it be /enterprise/<enterprise_id>/card/<card_id>???
-@enterprises.route('/enterprise/<id>/card', methods=['DELETE'])
+@enterprises.route('/enterprise/card/<id>', methods=['DELETE'])
 def remove_enterprise_card (id):
-    
-    card_id = request.json['card_id'] # UNSURE HOW TO FORMAT TO GET IT FROM THIS JSON REQUEST
-
-    delete_query = 'DELETE FROM enterprise_credit_cards WHERE enterprise_id = %s AND credit_card_id = %s'
-    values = (id, card_id)
+    delete_query = 'DELETE FROM credit_cards WHERE  credit_card_id = %s'
+    values = (id)
     cursor = db.get_db().cursor()
     cursor.execute(delete_query, values)
-
-    card_delete_query = 'DELETE FROM credit_cards WHERE id = %s'
-    values = (card_id,)
-    cursor.execute(card_delete_query, values)
 
     db.get_db().commit()
 

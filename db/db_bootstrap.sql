@@ -148,22 +148,14 @@ create table if not exists enterprise_categories (
 
 create table if not exists credit_cards (
     id int primary key auto_increment, -- pseudo primary key
+    enterprise_id int not null,
     number varchar(20) unique not null, -- this is a string not a number because it's better that way
     security_code int(3) not null,
     expiration datetime not null,
     first_name varchar(25) not null,
-    last_name varchar(25) not null
-);
-
--- i think this should be restructured so that credit_cards are weak entities
-create table if not exists enterprise_credit_cards (
-    enterprise_id int not null,
-    credit_card_id int not null,
-    primary key (enterprise_id, credit_card_id),
-    constraint ecc_enterprise_fk foreign key (enterprise_id) references enterprises(id)
-      on update cascade on delete restrict,
-    constraint ecc_credit_card_fk foreign key (credit_card_id) references credit_cards(id)
-      on update cascade on delete restrict
+    last_name varchar(25) not null,
+    constraint cc_enterprise_fk foreign key (enterprise_id) references enterprises(id)
+      on update cascade on delete cascade
 );
 
 -- Add sample data.
