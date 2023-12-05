@@ -104,7 +104,7 @@ def add_enterprise_card (id):
 
 # Add card to enterprise
 @enterprises.route('/enterprise/<id>/card', methods=['GET'])
-def add_enterprise_card (id):
+def get_enterprise_card (id):
     query = 'SELECT * FROM credit_cards WHERE enterprise_id = ' + str(id)
     current_app.logger.info(query)
     
