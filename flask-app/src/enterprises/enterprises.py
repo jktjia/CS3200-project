@@ -102,7 +102,7 @@ def add_enterprise_card (id):
         
     return 'Added card to enterprise successfully!'
 
-# Add card to enterprise
+# Get cards for enterprise
 @enterprises.route('/enterprise/<id>/card', methods=['GET'])
 def get_enterprise_card (id):
     query = 'SELECT * FROM credit_cards WHERE enterprise_id = ' + str(id)
@@ -119,10 +119,10 @@ def get_enterprise_card (id):
    
 # Remove card from enterprise
 # Should it be /enterprise/<enterprise_id>/card/<card_id>???
-@enterprises.route('/enterprise/card/<id>', methods=['DELETE'])
-def remove_enterprise_card (id):
-    delete_query = 'DELETE FROM credit_cards WHERE  credit_card_id = %s'
-    values = (id)
+@enterprises.route('/enterprise/<id>/card/<number>', methods=['DELETE'])
+def remove_enterprise_card (id, number):
+    delete_query = 'DELETE FROM credit_cards WHERE enterprise_id = %s AND number = %s'
+    values = (id, number)
     cursor = db.get_db().cursor()
     cursor.execute(delete_query, values)
 
@@ -131,14 +131,30 @@ def remove_enterprise_card (id):
     return 'Card removed successfully!'
 
 
-# Add a user to an enterprise
-@enterprises.route('/enterprise/<id>/user/<user_id>', methods=['POST'])
-def add_user_to_enterprise(id, user_id):
+# Return all users associated with an enterprise
+@enterprises.route('/enterprise/<id>/user', methods=['GET'])
+def get_users_enterprise(id):
+    query = 'SELECT id, username, first_name, last_name FROM users WHERE enterprise_id = ' + str(id)
+    current_app.logger.info(query)
+    
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
+
+
+# Add a user to an enterprise, use user name
+@enterprises.route('/enterprise/<id>/user/<user_name>', methods=['PUT'])
+def add_user_to_enterprise(id, user_name):
     the_data = request.json
     current_app.logger.info(the_data)
     
     # Update user's enterprise_id
-    update_query = 'UPDATE users SET enterprise_id = %s WHERE id = %s'
+    update_query = f'UPDATE users SET enterprise_id = {id} WHERE username = {user_name}'
     cursor = db.get_db().cursor()
     values = (id, user_id)
     cursor.execute(update_query, values)
@@ -164,13 +180,9 @@ def remove_user_from_enterprise(id, user_id):
 # Get forests of a specific enterpise
 @enterprises.route('/enterprise/<id>/forests', methods=['GET'])
 def get_enterprise_forests(id):
-    the_data = request.json
-    current_app.logger.info(the_data)
-    
-    query = 'SELECT categories.* FROM categories ' \
-            'JOIN enterprise_categories ON categories.id = enterprise_categories.category_id ' \
-            'WHERE enterprise_categories.enterprise_id = %s'
-    values = (id,)
+    query = 'SELECT categories.* FROM categories JOIN enterprise_categories ON categories.id = enterprise_categories.category_id WHERE enterprise_categories.enterprise_id = ' + str(id)
+    current_app.logger.info(query)
+
     cursor = db.get_db().cursor()
     cursor.execute(query, values)
     column_headers = [x[0] for x in cursor.description]

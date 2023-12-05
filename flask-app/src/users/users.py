@@ -17,13 +17,17 @@ def create_user():
     email = the_data['email']
     password = the_data['password']
     birthday = the_data['birthday']
+    first_name = the_data['first_name']
+    last_name = the_data['last_name']
 
     # Constructing the query
-    query = 'insert into users (username, email, password, birthday) values ("'
+    query = 'insert into users (username, email, password, birthday, first_name, last_name) values ("'
     query += username + '", "'
     query += email + '", "'
     query += str(password) + '", "'
-    query += str(birthday) + '")'
+    query += str(birthday) + '", "'
+    query += first_name + '", "'
+    query += last_name + '",)'
     current_app.logger.info(query)
 
     # executing and committing the insert statement 

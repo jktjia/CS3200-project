@@ -147,13 +147,13 @@ create table if not exists enterprise_categories (
 );
 
 create table if not exists credit_cards (
-    id int primary key auto_increment, -- pseudo primary key
     enterprise_id int not null,
     number varchar(20) unique not null, -- this is a string not a number because it's better that way
     security_code int(3) not null,
     expiration datetime not null,
     first_name varchar(25) not null,
     last_name varchar(25) not null,
+    primary key(enterprise_id, number),
     constraint cc_enterprise_fk foreign key (enterprise_id) references enterprises(id)
       on update cascade on delete cascade
 );
