@@ -229,3 +229,52 @@ def delete_save(id):
     db.get_db().commit()
     
     return 'Success!'
+
+# Get the most liked log in a category
+@logs.route('/logs/stats/most-liked/<category_id>', methods=['GET'])
+def get_most_liked(category_id):
+    query = 'SELECT logs.id, logs.title, COUNT(user_liked_logs.log_id) AS like_count FROM logs ' \
+            'JOIN log_lists ON logs.log_list_id = log_lists.id JOIN user_liked_logs ON logs.id = ' \
+            'user_liked_logs.log_id WHERE log_lists.category_id = %s GROUP BY logs.id ' \
+            'ORDER BY like_count DESC LIMIT 1'
+    values = (category_id)
+    cursor = db.get_db().cursor()
+    cursor.execute(query, values)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
+
+# Get the average rating of logs in a category
+@logs.route('/logs/stats/avg-rating/<category_id>', methods=['GET'])
+def get_avg_rating(category_id):
+    query = 'SELECT AVG(logs.rating) as average_rating FROM logs JOIN log_lists ON ' \
+            'logs.log_list_id = log_lists.id WHERE log_lists.category_id = %s'
+    values = (category_id)
+    cursor = db.get_db().cursor()
+    cursor.execute(query, values)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
+
+# Retrieve top 5 logs in a specific category based on likes
+@logs.route('/logs/stats/top-five/<category_id>', methods=['GET'])
+def get_top_five(category_id):
+    query = 'SELECT logs.id, logs.title, COUNT(user_liked_logs.log_id) AS like_count ' \
+            'FROM logs JOIN log_lists ON logs.log_list_id = log_lists.id LEFT JOIN ' \
+            'user_liked_logs ON logs.id = user_liked_logs.log_id WHERE log_lists.category_id = %s ' \
+            'GROUP BY logs.id ORDER BY like_count DESC LIMIT 5'
+    values = (category_id)
+    cursor = db.get_db().cursor()
+    cursor.execute(query, values)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
