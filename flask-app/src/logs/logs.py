@@ -89,6 +89,44 @@ def like_log(id):
     
     return 'Success!'
 
+
+@logs.route('/logs/toggle_like', methods=['POST'])
+def toggle_like_log():
+    
+    # collecting data from the request object 
+    the_data = request.json
+    current_app.logger.info("hi")
+    current_app.logger.info(the_data)
+    
+    #extracting the variable
+    user_id = the_data['user_id']
+    log_id = the_data['log_id']
+
+    likes_or_not = get_liked_or_not(log_id,user_id).json
+    current_app.logger.info(likes_or_not)
+    if likes_or_not[0] == "Unlike":
+        query = f'DELETE from user_liked_logs WHERE log_id =  {log_id} and user_id = {user_id}'
+        current_app.logger.info(query)
+
+        # executing and committing the insert statement 
+        cursor = db.get_db().cursor()
+        cursor.execute(query)
+        db.get_db().commit()    
+        return "Unliked!"
+    else:
+        query = 'insert into user_liked_logs (user_id, log_id) values ("'
+        query += str(user_id) + '", "'
+        query += str(log_id) + '")'
+        current_app.logger.info(query)
+
+        # executing and committing the insert statement 
+        cursor = db.get_db().cursor()
+        cursor.execute(query)
+        db.get_db().commit()
+        return 'Liked!'
+
+
+
 #save log
 @logs.route('/logs/<id>/save', methods=['POST'])
 def save_log(id):
