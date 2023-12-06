@@ -265,7 +265,7 @@ def get_avg_rating(category_id):
 # Retrieve top 5 logs in a specific category based on likes
 @logs.route('/logs/stats/top-five/<category_id>', methods=['GET'])
 def get_top_five(category_id):
-    query = 'SELECT logs.id, logs.title, COUNT(user_liked_logs.log_id) AS like_count ' \
+    query = 'SELECT logs.id, logs.content, logs.rating, logs.title, COUNT(user_liked_logs.log_id) AS like_count ' \
             'FROM logs JOIN log_lists ON logs.log_list_id = log_lists.id LEFT JOIN ' \
             'user_liked_logs ON logs.id = user_liked_logs.log_id WHERE log_lists.category_id = %s ' \
             'GROUP BY logs.id ORDER BY like_count DESC LIMIT 5'

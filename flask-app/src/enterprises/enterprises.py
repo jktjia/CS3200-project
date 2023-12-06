@@ -156,6 +156,21 @@ def add_user_to_enterprise(id, user_name):
     # Update user's enterprise_id
     update_query = f'UPDATE users SET enterprise_id = {id} WHERE username = {user_name}'
     cursor = db.get_db().cursor()
+    values = (id, user_name)
+    cursor.execute(update_query, values)
+    db.get_db().commit()
+
+    return 'User added to enterprise successfully!'
+
+# Add a user to an enterprise, use user id
+@enterprises.route('/enterprise/<id>/user_id/<user_id>', methods=['PUT'])
+def add_user_id_to_enterprise(id, user_id):
+    the_data = request.json
+    current_app.logger.info(the_data)
+    
+    # Update user's enterprise_id
+    update_query = f'UPDATE users SET enterprise_id = {id} WHERE id = {user_id}'
+    cursor = db.get_db().cursor()
     values = (id, user_id)
     cursor.execute(update_query, values)
     db.get_db().commit()
@@ -184,7 +199,7 @@ def get_enterprise_forests(id):
     current_app.logger.info(query)
 
     cursor = db.get_db().cursor()
-    cursor.execute(query, values)
+    cursor.execute(query)
     column_headers = [x[0] for x in cursor.description]
     json_data = []
     the_data = cursor.fetchall()
