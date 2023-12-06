@@ -116,7 +116,7 @@ def save_log(id):
 #get log
 @logs.route('/logs/<id>', methods=['GET'])
 def get_log (id):
-    query = 'SELECT * FROM logs join users on logs.created_by = users.id WHERE users.id = ' + id
+    query = 'SELECT * FROM logs WHERE id = ' + id
     #internal flask logging
     current_app.logger.info("-----------------------")
     current_app.logger.info("")
@@ -132,6 +132,7 @@ def get_log (id):
     the_data = cursor.fetchall()
     for row in the_data:
         json_data.append(dict(zip(column_headers, row)))
+    # current_app.logger.info(the_data)
     return jsonify(json_data)
 
 #get log comments
@@ -172,6 +173,26 @@ def get_likes (id):
     the_data = cursor.fetchall()
     for row in the_data:
         json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
+
+#get whether or not user has liked a given log
+@logs.route('/logs/<log_id>/like/<user_id>', methods=['GET'])
+def get_liked_or_not(log_id,user_id):
+    query = f'''SELECT COUNT(*) as like_count
+      FROM user_liked_logs WHERE log_id = {log_id} and user_id = {user_id}
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    value = the_data[0][0]
+    current_app.logger.info('value is' + str(value))
+    json_data.append("Like") if value == 0 else json_data.append("Unlike")
+    # current_app.logger.info(return_value)
+    # return return_value
+    # for row in the_data:
+    #     json_data.append(dict(zip(column_headers, row)))
     return jsonify(json_data)
 
 #delete a log
