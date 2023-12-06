@@ -106,7 +106,7 @@ def get_saved(id):
 def get_groves_owned(id):
     cursor = db.get_db().cursor()
     query = '''select name, description, log_lists.id from log_lists join user_log_list_accesses on 
-                   log_lists.id = user_log_list_accesses.log_list_id where user_id = {} and access_id = 1'''.format(id)
+                   log_lists.id = user_log_list_accesses.log_list_id where user_id = {} and access = "creator"'''.format(id)
     cursor.execute(query)
     row_headers = [x[0] for x in cursor.description]
     json_data = []
@@ -120,7 +120,7 @@ def get_groves_owned(id):
 @users.route('/users/<id>/groves/access', methods=['GET'])
 def get_groves_access(id):
     cursor = db.get_db().cursor()
-    query = '''select name, description, log_lists.id from log_lists join user_log_list_accesses on 
+    query = '''select name, description, log_lists.id, user_log_list_accesses.access from log_lists join user_log_list_accesses on 
                    log_lists.id = user_log_list_accesses.log_list_id where user_id = {}'''.format(id)
     cursor.execute(query)
     row_headers = [x[0] for x in cursor.description]
