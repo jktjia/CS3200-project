@@ -17,12 +17,14 @@ def create_grove():
     description = the_data['description']
     is_private = the_data['is_private']
     user_id = the_data['user_id']
+    category_id = the_data['category_id']
 
     # Constructing the query
-    query = 'insert into log_lists (name, description, is_private) values ("'
+    query = 'insert into log_lists (name, description, is_private, category_id) values ("'
     query += name + '", "'
-    query += description + '", "'
-    query += str(is_private) + '")'
+    query += description + '", '
+    query += str(is_private) + ', "'
+    query += category_id + '")'
     current_app.logger.info(query)
 
     # executing and committing the insert statement 
@@ -82,10 +84,25 @@ def edit_grove(id):
     return 'Success!'
 
 # get all users and their access levels for a grove
+@groves.route('/groves/<id>/settings', methods=['GET'])
+def get_grove_settings (id):
+    
+    query = 'SELECT name, description, is_private, category_id FROM log_lists WHERE id = ' + str(id)
+    current_app.logger.info(query)
+    
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
+
+# get all users and their access levels for a grove
 @groves.route('/groves/<id>/accesses', methods=['GET'])
 def get_grove_accessses (id):
-    
-    query = 'SELECT u.user_id, access FROM user_log_list_accesses u WHERE u.log_list_id = ' + str(id)
+    query = 'SELECT a.user_id, u.username, access FROM user_log_list_accesses a JOIN users u ON a.user_id = u.id WHERE a.log_list_id = ' + str(id)
     current_app.logger.info(query)
     
     cursor = db.get_db().cursor()
