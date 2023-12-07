@@ -27,7 +27,7 @@ def create_user():
     query += str(password) + '", "'
     query += str(birthday) + '", "'
     query += first_name + '", "'
-    query += last_name + '",)'
+    query += last_name + '")'
     current_app.logger.info(query)
 
     # executing and committing the insert statement 
