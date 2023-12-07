@@ -121,7 +121,7 @@ def get_enterprise_card (id):
 # Should it be /enterprise/<enterprise_id>/card/<card_id>???
 @enterprises.route('/enterprise/<id>/card/<number>', methods=['DELETE'])
 def remove_enterprise_card (id, number):
-    delete_query = 'DELETE FROM credit_cards WHERE enterprise_id = %s AND number = %s'
+    delete_query = 'DELETE FROM credit_cards WHERE enterprise_id = %s AND number = "%s"'
     values = (id, number)
     cursor = db.get_db().cursor()
     cursor.execute(delete_query, values)

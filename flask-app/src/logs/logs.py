@@ -25,8 +25,8 @@ def create_log():
     # Constructing the query
     query = 'insert into logs (title, content, rating, created_by, log_list_id) values ("'
     query += title + '", "'
-    query += content + '", "'
-    query += str(rating) + '", "'
+    query += content + '", '
+    query += str(rating) + ', "'
     query += str(created_by) + '", "'
     query += str(log_list_id) + '")'
     current_app.logger.info(query)
@@ -51,7 +51,7 @@ def comment_log(id):
     content = the_data['content']
 
     # Constructing the query
-    query = 'insert into comments (user_id, log_id, content) values ("'
+    query = 'insert into comments (user_id, content, log_id) values ("'
     query += str(user_id) + '", "'
     query += content + '", "'
     query += str(id) + '")'

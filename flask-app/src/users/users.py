@@ -170,7 +170,7 @@ select title, content, rating, logs.created_at, username, enterprise_id from
 @users.route('/users/<id>/feed/home', methods=['GET'])
 def get_home(id):
     cursor = db.get_db().cursor()
-    cursor.execute('''select title, content, rating, logs.created_at, users.username, enterprise_id, log_lists.id as grove_id from logs join log_lists on
+    cursor.execute('''select logs.id as log_id, title, content, rating, logs.created_at, users.username, enterprise_id, log_lists.id as grove_id from logs join log_lists on
     logs.log_list_id=log_lists.id join user_log_list_accesses on
         log_lists.id=user_log_list_accesses.log_list_id join users on logs.created_by = users.id where
                                                     user_log_list_accesses.user_id = {};'''.format(id))
