@@ -26,13 +26,8 @@ def create_grove():
     query = 'insert into log_lists (name, description, is_private, category_id) values ("'
     query += name + '", "'
     query += description + '", '
-<<<<<<< HEAD
     query += str(is_private) + ', '
-    query += category_id + ')'
-=======
-    query += str(is_private) + ', "'
-    query += str(category_id) + '")'
->>>>>>> 6a25619fceb176f505f437e857b783ac6bb4598b
+    query += str(category_id) + ')'
     current_app.logger.info(query)
 
     # executing and committing the insert statement 
