@@ -87,7 +87,7 @@ def get_user (id):
 @users.route('/users/<id>/saves', methods=['GET'])
 def get_saved(id):
     cursor = db.get_db().cursor()
-    cursor.execute(f'select log_id, content from user_saved_logs\
+    cursor.execute(f'select log_id, title, content from user_saved_logs\
         inner join users on users.id = user_saved_logs.user_id\
         inner join logs on logs.id = user_saved_logs.log_id\
             where user_id = {id}')
