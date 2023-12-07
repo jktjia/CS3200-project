@@ -25,8 +25,8 @@ def create_log():
     # Constructing the query
     query = 'insert into logs (title, content, rating, created_by, log_list_id) values ("'
     query += title + '", "'
-    query += content + '", "'
-    query += str(rating) + '", "'
+    query += content + '", '
+    query += str(rating) + ', "'
     query += str(created_by) + '", "'
     query += str(log_list_id) + '")'
     current_app.logger.info(query)
@@ -51,7 +51,7 @@ def comment_log(id):
     content = the_data['content']
 
     # Constructing the query
-    query = 'insert into comments (user_id, log_id, content) values ("'
+    query = 'insert into comments (user_id, content, log_id) values ("'
     query += str(user_id) + '", "'
     query += content + '", "'
     query += str(id) + '")'
@@ -154,7 +154,7 @@ def save_log(id):
 #get log
 @logs.route('/logs/<id>', methods=['GET'])
 def get_log (id):
-    query = 'SELECT * FROM logs WHERE id = ' + id
+    query = 'SELECT logs.*, users.username FROM logs join users on logs.created_by = users.id WHERE logs.id = ' + id
     #internal flask logging
     current_app.logger.info("-----------------------")
     current_app.logger.info("")
