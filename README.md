@@ -2,6 +2,9 @@
 
 Loggr is a low-interaction generic log-based social media, in which all user posts are ‘logs’. Logs are effectively loosely structured text data. Each log is part of a loose list of logs, a “Grove”. Users can make Groves for anything from their reviews of movies they’ve seen to hikes they’ve been on. Users can see, like, comment, and save logs from other user’s Groves, but only those that are manually made public and set to a predefined category. People can share their lists, but lists are private by default, ensuring that Loggr stands apart from traditional social media by prioritizing privacy and discrete social interaction. Paid “Enterprise” users can access deeper analytics about what people are up to, but not too much.
 
+This repository contains the database and REST API that power our app.
+The repository for the app itself can be found here: https://github.com/jktjia/CS3200-appsmith
+
 # MySQL + Flask Boilerplate Project
 
 This repo contains a boilerplate setup for spinning up 3 Docker containers: 
