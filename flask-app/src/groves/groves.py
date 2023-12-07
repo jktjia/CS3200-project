@@ -19,12 +19,15 @@ def create_grove():
     user_id = the_data['user_id']
     category_id = the_data['category_id']
 
+    if category_id == '':
+        category_id = "NULL"
+
     # Constructing the query
     query = 'insert into log_lists (name, description, is_private, category_id) values ("'
     query += name + '", "'
     query += description + '", '
-    query += str(is_private) + ', "'
-    query += category_id + '")'
+    query += str(is_private) + ', '
+    query += category_id + ')'
     current_app.logger.info(query)
 
     # executing and committing the insert statement 
