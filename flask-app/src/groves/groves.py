@@ -24,7 +24,7 @@ def create_grove():
     query += name + '", "'
     query += description + '", '
     query += str(is_private) + ', "'
-    query += category_id + '")'
+    query += str(category_id) + '")'
     current_app.logger.info(query)
 
     # executing and committing the insert statement 

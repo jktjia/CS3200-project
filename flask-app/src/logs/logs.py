@@ -154,7 +154,7 @@ def save_log(id):
 #get log
 @logs.route('/logs/<id>', methods=['GET'])
 def get_log (id):
-    query = 'SELECT * FROM logs WHERE id = ' + id
+    query = 'SELECT logs.*, users.username FROM logs join users on logs.created_by = users.id WHERE logs.id = ' + id
     #internal flask logging
     current_app.logger.info("-----------------------")
     current_app.logger.info("")
