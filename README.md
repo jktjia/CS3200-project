@@ -5,7 +5,7 @@ Loggr is a low-interaction generic log-based social media, in which all user pos
 This repository contains the database and REST API that power our app.
 The repository for the app itself can be found here: https://github.com/jktjia/CS3200-appsmith
 
-Here is a link to a demo of our app: https://drive.google.com/file/d/1d540PDc8uPyd2O47XiAQ2ms5ujYaK41Z/view?usp=sharing
+Here is a link to a demo of our app: https://drive.google.com/file/d/1y9bygisZUlaCnLr0YHIQVtjBjv7730G-/view?usp=sharing
 
 # MySQL + Flask Boilerplate Project
 
